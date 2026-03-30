@@ -1,0 +1,20 @@
+__pycache__/
+*.py[cod]
+*$py.class
+.env
+.venv
+env/
+venv/
+ENV/
+.idea/
+.vscode/
+.DS_Store
+
+# Data files
+data/store/*.parquet
+data/store/*.sqlite
+data/store/*.csv
+data/store/*.json
+
+# Model/Agent files
+.claude/
