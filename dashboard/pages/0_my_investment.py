@@ -349,7 +349,8 @@ if simulate_btn or True:  # 기본으로 보여주기
                   f"{disp_symbol}{total_d:,.0f}" if not is_krw else f"₩{total_d:,.0f}")
 
     st.caption(
-        f"⚠️ 위 시뮬레이션은 평균 배당수익률 {avg_yield:.1%}, 주가 성장률 4% 가정 기반의 추정치입니다. "
+        f"⚠️ 위 시뮬레이션은 평균 배당수익률 {avg_yield:.1%}, "
+        f"가중평균 주가 성장률 {avg_price_growth:.1%} 가정 기반의 추정치입니다. "
         "실제 성과와 다를 수 있으며 투자 손실이 발생할 수 있습니다."
     )
 
@@ -494,3 +495,41 @@ if simulate_btn or True:  # 기본으로 보여주기
         f"📌 **전체 포트폴리오 예상 연배당: {disp_symbol}{total_annual_div:,.0f}"
         f" | 월 {disp_symbol}{total_annual_div/12:,.0f}**"
     )
+
+    # ── 포트폴리오를 session_state에 저장 (다른 페이지와 공유) ──────
+    from dashboard.shared_state import save_portfolio
+
+    _weights: dict[str, float] = {}
+    for rec in recommendations:
+        strat_stocks = stock_recs.get(rec["전략"], [])
+        n = len(strat_stocks) or 1
+        for sym in strat_stocks:
+            _weights[sym] = _weights.get(sym, 0.0) + rec["비중"] / n
+    _total_w = sum(_weights.values()) or 1.0
+    _weights = {k: v / _total_w for k, v in _weights.items()}
+
+    avg_div_growth = sum(r["비중"] * r["배당 성장률"] for r in recommendations)
+
+    save_portfolio(
+        symbols=list(_weights.keys()),
+        weights=_weights,
+        amount_usd=amount_usd,
+        currency="KRW" if is_krw else "USD",
+        avg_yield=avg_yield,
+        avg_div_growth=avg_div_growth,
+        avg_price_growth=avg_price_growth,
+    )
+
+    # ── 다음 단계 안내 ────────────────────────────────────────────
+    st.divider()
+    st.subheader("🔜 다음 단계로 이어서 분석하기")
+    st.caption("추천 포트폴리오가 자동으로 아래 페이지에 적용됩니다.")
+    btn1, btn2, btn3, btn4 = st.columns(4)
+    with btn1:
+        st.page_link("pages/1_dividend_projection.py", label="📈 배당 수입 예측", icon="📈")
+    with btn2:
+        st.page_link("pages/2_allocation.py",          label="🥧 포트폴리오 배분", icon="🥧")
+    with btn3:
+        st.page_link("pages/3_monthly_calendar.py",    label="📅 배당 캘린더",    icon="📅")
+    with btn4:
+        st.page_link("pages/5_growth_visualization.py",label="🌱 종목 심층 분석", icon="🌱")
