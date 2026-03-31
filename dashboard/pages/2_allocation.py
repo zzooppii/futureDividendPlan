@@ -17,15 +17,14 @@ st.title("🥧 포트폴리오 배분 분석")
 
 fetcher = get_fetcher()
 
-st.sidebar.header("⚙️ 포트폴리오 설정")
-symbols_input = st.sidebar.text_area(
-    "종목 입력 (줄바꿈 또는 쉼표 구분)",
-    "JEPI\nJEPQ\nO\nJNJ\nPG\nMSFT\nKO\nAAPL\nVZ\nMAIN",
-)
-investment = st.sidebar.number_input("총 투자금액 ($)", 1_000, 10_000_000, 100_000, 1_000)
+from dashboard.shared_state import portfolio_banner, symbol_selector_sidebar, get_amount_usd
 
-raw = symbols_input.replace(",", "\n")
-symbols = [s.strip().upper() for s in raw.split("\n") if s.strip()]
+portfolio_banner()
+
+st.sidebar.header("⚙️ 포트폴리오 설정")
+symbols = symbol_selector_sidebar("alloc")
+investment = st.sidebar.number_input("총 투자금액 ($)", 1_000, 10_000_000,
+                                     int(get_amount_usd()), 1_000)
 
 if st.sidebar.button("📊 분석", type="primary") or symbols:
     portfolio_data = []
