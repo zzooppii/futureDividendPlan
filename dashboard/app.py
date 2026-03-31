@@ -19,6 +19,30 @@ st.set_page_config(
 
 def home():
     st.title("💹 나스닥 배당 투자 리서치 시스템")
+    st.markdown("배당 투자를 처음 시작하는 분도 쉽게 종목을 선정하고 미래 수익을 시뮬레이션할 수 있습니다.")
+
+    # ── 처음 사용자 가이드 ─────────────────────────────────────────
+    with st.container(border=True):
+        st.markdown("### 📌 처음이시라면 이 순서대로 진행하세요")
+        g1, g2, g3, g4 = st.columns(4)
+        with g1:
+            st.markdown("**1️⃣ 투자 플래너**")
+            st.caption("투자금·목표·위험성향 입력 → 맞춤 전략 + 종목 추천")
+            st.page_link("pages/0_my_investment.py", label="→ 시작하기", icon="💰")
+        with g2:
+            st.markdown("**2️⃣ 배당 수입 예측**")
+            st.caption("추천 종목의 10~30년 배당 복리 성장 시뮬레이션")
+            st.page_link("pages/1_dividend_projection.py", label="→ 예측하기", icon="📈")
+        with g3:
+            st.markdown("**3️⃣ 배당 캘린더**")
+            st.caption("매달 어떤 종목에서 언제 배당이 들어오는지 확인")
+            st.page_link("pages/3_monthly_calendar.py", label="→ 확인하기", icon="📅")
+        with g4:
+            st.markdown("**4️⃣ 용어사전**")
+            st.caption("배당수익률·베타·샤프비율 등 투자 용어 한눈에 보기")
+            st.page_link("pages/7_glossary.py", label="→ 용어 보기", icon="📖")
+
+    st.divider()
 
     # ── 클릭 가능한 카드 ───────────────────────────────────────────
     col1, col2, col3 = st.columns(3)
@@ -48,6 +72,7 @@ def home():
         st.page_link("pages/5_growth_visualization.py",   label="🌱 성장 분석")
     with c4:
         st.page_link("pages/6_covered_call_simulator.py", label="📞 커버드콜")
+        st.page_link("pages/7_glossary.py",               label="📖 용어사전")
 
 
 pg = st.navigation(
@@ -63,6 +88,9 @@ pg = st.navigation(
             st.Page("pages/4_strategy_comparison.py",    title="⚔️ 전략 비교 (Strategy Comparison)"),
             st.Page("pages/5_growth_visualization.py",   title="🌱 성장 분석 (Growth Visualization)"),
             st.Page("pages/6_covered_call_simulator.py", title="📞 커버드콜 (Covered Call Simulator)"),
+        ],
+        "가이드": [
+            st.Page("pages/7_glossary.py", title="📖 용어사전 (Glossary)"),
         ],
     }
 )
