@@ -69,10 +69,18 @@ selected_strategies = st.sidebar.multiselect(
     default=["월배당 최대화", "실버 연금 배당", "장기 배당 성장"],
 )
 universe_size = st.sidebar.radio("유니버스", ["소규모 (빠름)", "전체"])
-start_date = st.sidebar.text_input("시작일", "2015-01-01")
-end_date = st.sidebar.text_input("종료일", "2026-03-01")
+
+import datetime
+start_date = str(st.sidebar.date_input("시작일", datetime.date(2015, 1, 1),
+                                        min_value=datetime.date(2005, 1, 1),
+                                        max_value=datetime.date(2025, 12, 31)))
+end_date   = str(st.sidebar.date_input("종료일",  datetime.date(2026, 3, 1),
+                                        min_value=datetime.date(2006, 1, 1),
+                                        max_value=datetime.date(2026, 12, 31)))
 capital = st.sidebar.number_input("초기 투자금 ($)", 10_000, 10_000_000, 100_000, 10_000)
-rebalance = st.sidebar.selectbox("리밸런싱 주기", ["quarterly", "monthly", "annual"])
+_rebalance_map = {"분기 (3개월)": "quarterly", "월 (1개월)": "monthly", "연 (12개월)": "annual"}
+_rebalance_label = st.sidebar.selectbox("리밸런싱 주기", list(_rebalance_map.keys()))
+rebalance = _rebalance_map[_rebalance_label]
 reinvest = st.sidebar.checkbox("배당 재투자", True)
 max_pos = st.sidebar.slider("최대 종목 수", 5, 20, 10)
 
